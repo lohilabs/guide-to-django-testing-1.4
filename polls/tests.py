@@ -1,23 +1,25 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
-
+import datetime
 from django.test import TestCase
+from polls.models import Poll, Choice
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
+class PollsViewsTestCase(TestCase):
+    def test_index(self):
+        poll_1 = Poll.objects.create(
+            question='Are you learning about testing in Django?',
+            pub_date=datetime.datetime(2011, 04, 10, 0, 37)
+        )
+        choice_1 = Choice.objects.create(
+            poll=poll_1,
+            choice='Yes',
+            votes=0
+        )
+        choice_2 = Choice.objects.create(
+            poll=poll_1,
+            choice='No',
+            votes=0
+        )
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
-
->>> 1 + 1 == 2
-True
-"""}
-
+        resp = self.client.get('/polls/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue('latest_poll_list' in resp.context)
+        self.assertEqual([poll.pk for poll in resp.context['latest_poll_list']], [1])
