@@ -1,8 +1,6 @@
--------------------------------------
 Updated for Django 1.4 in the master branch
 The tags are still based on 1.3 and probably won't be updated
 The master branch contains the final code 
--------------------------------------
 
 
 ==========================
